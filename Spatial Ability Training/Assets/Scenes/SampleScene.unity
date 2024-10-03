@@ -727,6 +727,10 @@ PrefabInstance:
       value: RotateObj
       objectReference: {fileID: 0}
     - target: {fileID: 3592077644121601191, guid: 3d4e159ef8978624bad191c3cab8d09d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3592077644121601191, guid: 3d4e159ef8978624bad191c3cab8d09d, type: 3}
       propertyPath: m_TagString
       value: Rotate
       objectReference: {fileID: 0}
@@ -984,6 +988,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   reference: {fileID: 2100000, guid: 1457244afefe13143b206464d267ffbe, type: 2}
   idle: {fileID: 2100000, guid: 2fa3baaa5527f95448f08cad7bed65b0, type: 2}
+  correct: {fileID: 2100000, guid: 9a23c092162f2a743bb581659e655830, type: 2}
+  hover: {fileID: 2100000, guid: 69fb2f8236528d0498f50c1fd0f32a60, type: 2}
+  audioSource: {fileID: 1210822245}
   cubePrefabs:
   - {fileID: 3592077644121601191, guid: 3d4e159ef8978624bad191c3cab8d09d, type: 3}
   - {fileID: 2686662377745450901, guid: c29f143c7187331429fb42b3a689bd33, type: 3}
@@ -1230,6 +1237,10 @@ PrefabInstance:
     - target: {fileID: 3592077644121601191, guid: 3d4e159ef8978624bad191c3cab8d09d, type: 3}
       propertyPath: m_Name
       value: ReferenceObj
+      objectReference: {fileID: 0}
+    - target: {fileID: 3592077644121601191, guid: 3d4e159ef8978624bad191c3cab8d09d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4220522909007687197, guid: 3d4e159ef8978624bad191c3cab8d09d, type: 3}
       propertyPath: m_LocalScale.x

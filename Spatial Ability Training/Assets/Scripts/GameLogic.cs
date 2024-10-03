@@ -1,15 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameLogic : MonoBehaviour
 {
 
     public Material reference;
-
     public Material idle;
+    public Material correct;
+    public Material hover;
 
+    public AudioSource audioSource;
+    
     private float cubeScaleFactor = 0.3f;
 
     public List<GameObject> cubePrefabs;
@@ -17,14 +21,13 @@ public class GameLogic : MonoBehaviour
     private SortedDictionary<string, List<int>> playedAngles;
 
     public GameObject interactabelParent;
-
     public GameObject referenceParent;
-
-    public 
+    
     // Start is called before the first frame update
     void Start()
     {
-        
+        playedAngles = new SortedDictionary<string, List<int>>();
+        initalizeTask();
     }
 
     // Update is called once per frame
@@ -47,14 +50,18 @@ public class GameLogic : MonoBehaviour
                 cube = selectCube();
             }
         }
+        //Make sure no cubes remain in scene
+        destroyAllChildren(referenceParent);
+        destroyAllChildren(interactabelParent);
         
-        //(Instantiate (cube, Vector3.zero, Vector3.zero) as GameObject).transform.parent = referenceParent.transform;
-        //(Instantiate (cube, Vector3.zero, new Vector3(angle,angle,0)) as GameObject).transform.parent = interactabelParent.transform;
-        
-        
-        
-        
+        //Instantiate new Cubes
+        var referenceInstance = Instantiate(cube, Vector3.zero, Quaternion.identity);
+        var interactableInstance = Instantiate(cube, Vector3.zero, Quaternion.Euler(angle, angle, 0));
+        referenceInstance.transform.parent = referenceParent.transform;
+        interactableInstance.transform.parent = interactabelParent.transform;
 
+        initializeReference(referenceInstance);
+        initializeInteractabel(interactableInstance);
     }
 
     GameObject selectCube()
@@ -118,5 +125,46 @@ public class GameLogic : MonoBehaviour
         }
         
         return angle;
+    }
+
+    private void initializeReference(GameObject referenceInstance)
+    {
+        //Set correct position, rotation and color
+        referenceInstance.transform.localScale = new Vector3(cubeScaleFactor, cubeScaleFactor, cubeScaleFactor); // change its local scale in x y z format
+        referenceInstance.transform.localPosition = Vector3.zero;
+        var referenceCube = referenceInstance.transform.Find("Cube");
+        referenceCube.GetComponent<Renderer>().material = reference;
+    }
+
+    private void initializeInteractabel(GameObject interactableInstance)
+    {
+        //Set correct position, rotation and color
+        interactableInstance.transform.localScale = new Vector3(cubeScaleFactor, cubeScaleFactor, cubeScaleFactor);
+        interactableInstance.transform.localPosition = Vector3.zero;
+        var interactableCube = interactableInstance.transform.Find("Cube");
+        interactableCube.GetComponent<Renderer>().material = idle;
+        
+        //Add needed scripts
+        interactableInstance.AddComponent<RotateOnMouseDrag>();
+        interactableCube.AddComponent<ColorOnHover>();
+
+        //Add variables for Rotate Script
+        RotateOnMouseDrag rotateScript = interactableInstance.GetComponent<RotateOnMouseDrag>();
+        rotateScript.correctMaterial = correct;
+        rotateScript.idleMaterial = idle;
+        rotateScript.AudioSource = audioSource;
+
+        //Add variables for Color Script
+        ColorOnHover colorScript = interactableCube.GetComponent<ColorOnHover>();
+        colorScript.idleMaterial = idle;
+        colorScript.hoverMaterial = hover;
+    }
+
+    private void destroyAllChildren(GameObject parent)
+    {
+        foreach(Transform child in parent.transform)
+        {
+            Destroy(child.gameObject);
+        }
     }
 }
