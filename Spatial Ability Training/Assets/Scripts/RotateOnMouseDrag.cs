@@ -9,7 +9,6 @@ public class RotateOnMouseDrag : MonoBehaviour
 {
 
     private Camera mainCamera;
-    private Transform mainCameraTranform;
 
     private Vector3 mousePrevPos = Vector3.zero;
     private Vector3 mousePosDelta = Vector3.zero;
@@ -20,18 +19,16 @@ public class RotateOnMouseDrag : MonoBehaviour
     private bool isRotateAllowed = false;
     private bool isRotateDone = false;
     
-    private Vector3 neutralRoatation = Quaternion.identity.eulerAngles;
     private float snapThreshold = 30;
 
-    public Material correctMaterial;
     public Material idleMaterial;
-    public AudioSource AudioSource;
+
+    public GameLogic gameLogic;
 
     // Start is called before the first frame update
     void Start()
     {
         mainCamera = Camera.main;
-        mainCameraTranform = mainCamera.transform;
     }
 
     // Update is called once per frame
@@ -40,9 +37,12 @@ public class RotateOnMouseDrag : MonoBehaviour
         if (!isRotateDone)
         {
           setIsRotateAllowed();
-          rotateAroundCenterOnMouseDrag();
-          checkForSnapping();
+          rotateAroundClickOnMouseDrag();
           mousePrevPos = Input.mousePosition;  
+        }
+        else
+        {
+            gameLogic.GetComponent<GameLogic>().taskFinished = true;
         }
         
     }
@@ -66,11 +66,8 @@ public class RotateOnMouseDrag : MonoBehaviour
         if (Input.GetMouseButtonUp(0))
         {
             isRotateAllowed = false;
-            if (!isRotateDone)
-            {
-              gameObject.GetComponent<Renderer>().material = idleMaterial;  
-            }
-            
+            gameObject.GetComponent<Renderer>().material = idleMaterial;
+
         }
     }
 
@@ -98,23 +95,4 @@ public class RotateOnMouseDrag : MonoBehaviour
         }
     }
 
-    void checkForSnapping()
-    {
-        if (RotationAngleHelper.IsRotationWithinLimits(transform.localEulerAngles,10))
-        {
-            isRotateAllowed = false;
-            isRotateDone = true;
-            transform.rotation = Quaternion.identity;
-
-            givePositiveFeedback();
-        }
-    }
-
-    void givePositiveFeedback()
-    {
-        transform.Find("Cube").gameObject.GetComponent<Renderer>().material = correctMaterial;
-        AudioSource.Play();
-
-    }
-    
 }

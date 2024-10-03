@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TransformGizmos;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -22,49 +23,63 @@ public class GameLogic : MonoBehaviour
 
     public GameObject interactabelParent;
     public GameObject referenceParent;
+
+    [HideInInspector] public bool taskFinished = false;
+
+    public GameObject gizmo;
     
     // Start is called before the first frame update
     void Start()
     {
         playedAngles = new SortedDictionary<string, List<int>>();
-        initalizeTask();
+        InitalizeTask();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (taskFinished)
+        {
+            gizmo.SetActive(false);
+            InitalizeTask();
+        }
     }
 
-    void initalizeTask()
+    void InitalizeTask()
     {
+        taskFinished = false;
         int angle = -1;
-        GameObject cube = selectCube();
+        GameObject cube = SelectCube();
 
         while (angle == -1)
         {
-            angle = selectAngle(cube.name);
+            angle = SelectAngle(cube.name);
             if (angle == -1)
             {
                 cubePrefabs.Remove(cube);
-                cube = selectCube();
+                cube = SelectCube();
             }
         }
         //Make sure no cubes remain in scene
-        destroyAllChildren(referenceParent);
-        destroyAllChildren(interactabelParent);
-        
+        DestroyAllChildren(referenceParent);
+        DestroyAllChildren(interactabelParent);
+
         //Instantiate new Cubes
         var referenceInstance = Instantiate(cube, Vector3.zero, Quaternion.identity);
         var interactableInstance = Instantiate(cube, Vector3.zero, Quaternion.Euler(angle, angle, 0));
         referenceInstance.transform.parent = referenceParent.transform;
         interactableInstance.transform.parent = interactabelParent.transform;
 
-        initializeReference(referenceInstance);
-        initializeInteractabel(interactableInstance);
+        //Initalize Gizmo
+        gizmo.SetActive(true);
+        gizmo.GetComponent<GizmoController>().m_targetObject = interactableInstance;
+        gizmo.GetComponent<GizmoController>().Init();
+
+        InitializeReference(referenceInstance);
+        InitializeInteractabel(interactableInstance);
     }
 
-    GameObject selectCube()
+    GameObject SelectCube()
     {
         if (cubePrefabs.Count > 0)
         {
@@ -83,7 +98,7 @@ public class GameLogic : MonoBehaviour
         }
     }
 
-    int selectAngle(string objName)
+    int SelectAngle(string objName)
     {
         //Only Allow these three angles and shuffle them, so we do not always have the same difficulty at start
         List<int> allowedAnglesList = new (){50,100,150};
@@ -127,7 +142,7 @@ public class GameLogic : MonoBehaviour
         return angle;
     }
 
-    private void initializeReference(GameObject referenceInstance)
+    private void InitializeReference(GameObject referenceInstance)
     {
         //Set correct position, rotation and color
         referenceInstance.transform.localScale = new Vector3(cubeScaleFactor, cubeScaleFactor, cubeScaleFactor); // change its local scale in x y z format
@@ -136,7 +151,7 @@ public class GameLogic : MonoBehaviour
         referenceCube.GetComponent<Renderer>().material = reference;
     }
 
-    private void initializeInteractabel(GameObject interactableInstance)
+    private void InitializeInteractabel(GameObject interactableInstance)
     {
         //Set correct position, rotation and color
         interactableInstance.transform.localScale = new Vector3(cubeScaleFactor, cubeScaleFactor, cubeScaleFactor);
@@ -145,22 +160,30 @@ public class GameLogic : MonoBehaviour
         interactableCube.GetComponent<Renderer>().material = idle;
         
         //Add needed scripts
-        interactableInstance.AddComponent<RotateOnMouseDrag>();
-        interactableCube.AddComponent<ColorOnHover>();
+        //interactableInstance.AddComponent<RotateOnMouseDrag>();
+        //interactableCube.AddComponent<ColorOnHover>();
+        interactableInstance.AddComponent<SnapAndContinue>();
 
         //Add variables for Rotate Script
-        RotateOnMouseDrag rotateScript = interactableInstance.GetComponent<RotateOnMouseDrag>();
-        rotateScript.correctMaterial = correct;
-        rotateScript.idleMaterial = idle;
-        rotateScript.AudioSource = audioSource;
+        //RotateOnMouseDrag rotateScript = interactableInstance.GetComponent<RotateOnMouseDrag>();
+        //rotateScript.correctMaterial = correct;
+        //rotateScript.idleMaterial = idle;
+        //rotateScript.AudioSource = audioSource;
+        //rotateScript.gameLogic = this;
+        
+        //Add variables for snapping
+        SnapAndContinue snapScript = interactableInstance.GetComponent<SnapAndContinue>();
+        snapScript.audioSource = audioSource;
+        snapScript.correctMaterial = correct;
+        snapScript.gameLogic = this;
 
         //Add variables for Color Script
-        ColorOnHover colorScript = interactableCube.GetComponent<ColorOnHover>();
-        colorScript.idleMaterial = idle;
-        colorScript.hoverMaterial = hover;
+        //ColorOnHover colorScript = interactableCube.GetComponent<ColorOnHover>();
+        //colorScript.idleMaterial = idle;
+        //colorScript.hoverMaterial = hover;
     }
 
-    private void destroyAllChildren(GameObject parent)
+    private void DestroyAllChildren(GameObject parent)
     {
         foreach(Transform child in parent.transform)
         {

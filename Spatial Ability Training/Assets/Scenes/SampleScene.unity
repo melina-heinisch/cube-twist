@@ -123,6 +123,90 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1001 &683823752
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3714256444103571338, guid: b7222a1d1f9e86b4e989fa621985dc97, type: 3}
+      propertyPath: m_gizmoSize
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5193766487235759077, guid: b7222a1d1f9e86b4e989fa621985dc97, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5193766487235759077, guid: b7222a1d1f9e86b4e989fa621985dc97, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5193766487235759077, guid: b7222a1d1f9e86b4e989fa621985dc97, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5193766487235759077, guid: b7222a1d1f9e86b4e989fa621985dc97, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5193766487235759077, guid: b7222a1d1f9e86b4e989fa621985dc97, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5193766487235759077, guid: b7222a1d1f9e86b4e989fa621985dc97, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5193766487235759077, guid: b7222a1d1f9e86b4e989fa621985dc97, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5193766487235759077, guid: b7222a1d1f9e86b4e989fa621985dc97, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5193766487235759077, guid: b7222a1d1f9e86b4e989fa621985dc97, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5193766487235759077, guid: b7222a1d1f9e86b4e989fa621985dc97, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5193766487235759077, guid: b7222a1d1f9e86b4e989fa621985dc97, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5193766487235759077, guid: b7222a1d1f9e86b4e989fa621985dc97, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5193766487235759077, guid: b7222a1d1f9e86b4e989fa621985dc97, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5193766487235759077, guid: b7222a1d1f9e86b4e989fa621985dc97, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7532942921766665164, guid: b7222a1d1f9e86b4e989fa621985dc97, type: 3}
+      propertyPath: m_Name
+      value: Gizmo
+      objectReference: {fileID: 0}
+    - target: {fileID: 7532942921766665164, guid: b7222a1d1f9e86b4e989fa621985dc97, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects:
+    - {fileID: 2507379129498499088, guid: b7222a1d1f9e86b4e989fa621985dc97, type: 3}
+    - {fileID: 1845012574379517531, guid: b7222a1d1f9e86b4e989fa621985dc97, type: 3}
+    - {fileID: 2231608681191050374, guid: b7222a1d1f9e86b4e989fa621985dc97, type: 3}
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b7222a1d1f9e86b4e989fa621985dc97, type: 3}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -678,6 +762,11 @@ Transform:
   - {fileID: 1185003788}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1074085412 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7532942921766665164, guid: b7222a1d1f9e86b4e989fa621985dc97, type: 3}
+  m_PrefabInstance: {fileID: 683823752}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1112712577
 GameObject:
   m_ObjectHideFlags: 0
@@ -1026,6 +1115,8 @@ MonoBehaviour:
   - {fileID: 1234662856847243439, guid: 0842fbfc5b168074ba67a954ecbe2bad, type: 3}
   interactabelParent: {fileID: 987864655}
   referenceParent: {fileID: 1112712577}
+  taskFinished: 0
+  gizmo: {fileID: 1074085412}
 --- !u!4 &1332072761
 Transform:
   m_ObjectHideFlags: 0
@@ -1223,9 +1314,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 022db5db1d2b6c14cb09b45d180c339b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  correctMaterial: {fileID: 2100000, guid: 9a23c092162f2a743bb581659e655830, type: 2}
   idleMaterial: {fileID: 2100000, guid: 2fa3baaa5527f95448f08cad7bed65b0, type: 2}
-  AudioSource: {fileID: 1210822245}
+  gameLogic: {fileID: 0}
 --- !u!1001 &2034055373
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1323,3 +1413,4 @@ SceneRoots:
   - {fileID: 1332072761}
   - {fileID: 987864656}
   - {fileID: 1112712578}
+  - {fileID: 683823752}
