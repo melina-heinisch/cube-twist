@@ -29,6 +29,7 @@ namespace TransformGizmos
         Material[] m_defaultMaterials = new Material[3];
         Material[] m_hoveredMaterials = new Material[3];
         bool m_isDragging;
+        public bool isDragAllowed = false;
         float scale;
         float gizmoEpsilon = 2;
         Material m_gizmoTransparentMaterial;
@@ -123,6 +124,7 @@ namespace TransformGizmos
         public (Vector2, Vector2, Vector2, Vector3[]) MouseDownCode(Vector3 upVector, int axis)
         {
             m_isDragging = true;
+            isDragAllowed = true;
             m_objectWithMeshes.transform.parent = null;
             m_renderers[axis].material = m_clickedMaterial;
             m_renderers[axis].material.SetInt(GUIZ_TEST_MODE, FRONT_RENDERING);
@@ -215,46 +217,52 @@ namespace TransformGizmos
 
         public (float, Vector2) MouseDragCode(Vector2 initialMousePosition, Vector2 tangent, Vector2 lastProjectedMousePosition, float totalDist, Vector3[] vertices, int axis)
         {
-            m_renderers[axis].material = m_clickedMaterial;
-            m_renderers[axis].material.SetInt(GUIZ_TEST_MODE, FRONT_RENDERING);
-
-            Vector2 moveVector = (Vector2)Input.mousePosition - initialMousePosition;
-            Vector2 projectedMoveVector = Vector3.Project(moveVector, tangent);
-            Vector2 projectedPosition = initialMousePosition + projectedMoveVector;
-
-            float dotProduct = Vector2.Dot(projectedMoveVector, tangent);
-            float distNow = Vector2.Distance(projectedPosition, initialMousePosition);
-            float distBefore = Vector2.Distance(lastProjectedMousePosition, initialMousePosition);
-            float moveDist = Vector2.Distance(lastProjectedMousePosition, projectedPosition);
-            float dist;
-
-            if ((dotProduct > 0 && distNow > distBefore) || (dotProduct < 0 && distNow < distBefore))
-                dist = -moveDist;
-            else
-                dist = moveDist;
-
-            moveDist = dist / m_maxDist * 360;
-
-            switch (axis)
+            if (isDragAllowed)
             {
-                case 0:
-                    m_targetObject.transform.Rotate(-m_targetObject.transform.right, -moveDist, Space.World);
-                    break;
-                case 1:
-                    m_targetObject.transform.Rotate(-m_targetObject.transform.up, moveDist, Space.World);
-                    break;
-                case 2:
-                    m_targetObject.transform.Rotate(-m_targetObject.transform.forward, moveDist, Space.World);
-                    break;
+                m_renderers[axis].material = m_clickedMaterial;
+                m_renderers[axis].material.SetInt(GUIZ_TEST_MODE, FRONT_RENDERING);
+
+                Vector2 moveVector = (Vector2)Input.mousePosition - initialMousePosition;
+                Vector2 projectedMoveVector = Vector3.Project(moveVector, tangent);
+                Vector2 projectedPosition = initialMousePosition + projectedMoveVector;
+
+                float dotProduct = Vector2.Dot(projectedMoveVector, tangent);
+                float distNow = Vector2.Distance(projectedPosition, initialMousePosition);
+                float distBefore = Vector2.Distance(lastProjectedMousePosition, initialMousePosition);
+                float moveDist = Vector2.Distance(lastProjectedMousePosition, projectedPosition);
+                float dist;
+
+                if ((dotProduct > 0 && distNow > distBefore) || (dotProduct < 0 && distNow < distBefore))
+                    dist = -moveDist;
+                else
+                    dist = moveDist;
+
+                moveDist = dist / m_maxDist * 360;
+
+                switch (axis)
+                {
+                    case 0:
+                        m_targetObject.transform.Rotate(-m_targetObject.transform.right, -moveDist, Space.World);
+                        break;
+                    case 1:
+                        m_targetObject.transform.Rotate(-m_targetObject.transform.up, moveDist, Space.World);
+                        break;
+                    case 2:
+                        m_targetObject.transform.Rotate(-m_targetObject.transform.forward, moveDist, Space.World);
+                        break;
+                }
+
+                totalDist += dist;
+
+                ComputeAndShowTriangles(totalDist, m_mesh, m_mesh2, vertices);
+
+                (m_lastProjectedMousePosition, _) =
+                    TransformationsUtility.HandleMouseOutsideScreen(initialMousePosition, tangent);
+
+                return (totalDist, m_lastProjectedMousePosition);
             }
 
-            totalDist += dist;
-
-            ComputeAndShowTriangles(totalDist, m_mesh, m_mesh2, vertices);
-
-            (m_lastProjectedMousePosition, _) = TransformationsUtility.HandleMouseOutsideScreen(initialMousePosition, tangent);
-
-            return (totalDist, m_lastProjectedMousePosition);
+            return (0, m_lastProjectedMousePosition);
         }
 
         void ComputeAndShowTriangles(float totalDist, Mesh mesh, Mesh mesh2, Vector3[] vertices)

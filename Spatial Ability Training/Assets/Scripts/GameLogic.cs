@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using TransformGizmos;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -27,7 +28,9 @@ public class GameLogic : MonoBehaviour
     [HideInInspector] public bool taskFinished = false;
 
     public GameObject gizmo;
-    
+
+    public TextMeshProUGUI doneText;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -40,7 +43,11 @@ public class GameLogic : MonoBehaviour
     {
         if (taskFinished)
         {
-            gizmo.SetActive(false);
+            doneText.text = CountFinishedTasks();
+            gizmo.GetComponent<GizmoController>().m_rotation.MouseUpCode(0);
+            gizmo.GetComponent<GizmoController>().m_rotation.MouseUpCode(1);
+            gizmo.GetComponent<GizmoController>().m_rotation.MouseUpCode(2);
+            gizmo.GetComponent<GizmoController>().m_rotation.isDragAllowed = false;
             InitalizeTask();
         }
     }
@@ -189,5 +196,16 @@ public class GameLogic : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
+    }
+
+    private string CountFinishedTasks()
+    {
+        int doneTasks = 0;
+        foreach (var (key, value) in playedAngles)
+        {
+            doneTasks += value.Count;
+        }
+
+        return doneTasks.ToString();
     }
 }

@@ -7,6 +7,7 @@ namespace TransformGizmos
         [SerializeField] Material m_defaultMaterial;
         [SerializeField] Material m_hoveredMaterial;
         [SerializeField] GameObject m_otherHalf;
+        [SerializeField] public Rotation m_rotation;
 
         float m_totalDist;
         Vector3[] m_vertices;
