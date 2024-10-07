@@ -5,6 +5,7 @@ using TMPro;
 using TransformGizmos;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class GameLogic : MonoBehaviour
 {
@@ -27,9 +28,9 @@ public class GameLogic : MonoBehaviour
 
     [HideInInspector] public bool taskFinished = false;
 
-    public GameObject gizmo;
+    public GizmoController gizmo;
 
-    public TextMeshProUGUI doneText;
+    public TextMeshProUGUI doneTasksText;
 
     // Start is called before the first frame update
     void Start()
@@ -43,11 +44,8 @@ public class GameLogic : MonoBehaviour
     {
         if (taskFinished)
         {
-            doneText.text = CountFinishedTasks();
-            gizmo.GetComponent<GizmoController>().m_rotation.MouseUpCode(0);
-            gizmo.GetComponent<GizmoController>().m_rotation.MouseUpCode(1);
-            gizmo.GetComponent<GizmoController>().m_rotation.MouseUpCode(2);
-            gizmo.GetComponent<GizmoController>().m_rotation.isDragAllowed = false;
+            doneTasksText.text = CountFinishedTasks();
+            ResetGizmo();
             InitalizeTask();
         }
     }
@@ -60,30 +58,28 @@ public class GameLogic : MonoBehaviour
 
         while (angle == -1)
         {
-            angle = SelectAngle(cube.name);
-            if (angle == -1)
+            if (!(cube is null))
             {
-                cubePrefabs.Remove(cube);
-                cube = SelectCube();
+                angle = SelectAngle(cube.name);
+                if (angle == -1)
+                {
+                    cubePrefabs.Remove(cube);
+                    cube = SelectCube();
+                }
             }
         }
         //Make sure no cubes remain in scene
         DestroyAllChildren(referenceParent);
         DestroyAllChildren(interactabelParent);
 
-        //Instantiate new Cubes
+        //Instantiate & Initialize new Cubes
         var referenceInstance = Instantiate(cube, Vector3.zero, Quaternion.identity);
         var interactableInstance = Instantiate(cube, Vector3.zero, Quaternion.Euler(angle, angle, 0));
-        referenceInstance.transform.parent = referenceParent.transform;
-        interactableInstance.transform.parent = interactabelParent.transform;
-
-        //Initalize Gizmo
-        gizmo.SetActive(true);
-        gizmo.GetComponent<GizmoController>().m_targetObject = interactableInstance;
-        gizmo.GetComponent<GizmoController>().Init();
-
         InitializeReference(referenceInstance);
-        InitializeInteractabel(interactableInstance);
+        InitializeInteractableGizmo(interactableInstance);
+        
+        InitGizmo(interactableInstance);
+        
     }
 
     GameObject SelectCube()
@@ -151,6 +147,8 @@ public class GameLogic : MonoBehaviour
 
     private void InitializeReference(GameObject referenceInstance)
     {
+        referenceInstance.transform.parent = referenceParent.transform;
+        
         //Set correct position, rotation and color
         referenceInstance.transform.localScale = new Vector3(cubeScaleFactor, cubeScaleFactor, cubeScaleFactor); // change its local scale in x y z format
         referenceInstance.transform.localPosition = Vector3.zero;
@@ -158,8 +156,29 @@ public class GameLogic : MonoBehaviour
         referenceCube.GetComponent<Renderer>().material = reference;
     }
 
-    private void InitializeInteractabel(GameObject interactableInstance)
+    private void InitializeInteractableGizmo(GameObject interactableInstance)
     {
+        interactableInstance.transform.parent = interactabelParent.transform;
+        
+        //Set correct position, rotation and color
+        interactableInstance.transform.localScale = new Vector3(cubeScaleFactor, cubeScaleFactor, cubeScaleFactor);
+        interactableInstance.transform.localPosition = Vector3.zero;
+        var interactableCube = interactableInstance.transform.Find("Cube");
+        interactableCube.GetComponent<Renderer>().material = idle;
+        
+        //Add needed script
+        interactableInstance.AddComponent<SnapAndContinue>();
+
+        //Add variables for snapping
+        SnapAndContinue snapScript = interactableInstance.GetComponent<SnapAndContinue>();
+        snapScript.audioSource = audioSource;
+        snapScript.correctMaterial = correct;
+        snapScript.gameLogic = this;
+    }
+    private void InitializeInteractableDrag(GameObject interactableInstance)
+    {
+        interactableInstance.transform.parent = interactabelParent.transform;
+        
         //Set correct position, rotation and color
         interactableInstance.transform.localScale = new Vector3(cubeScaleFactor, cubeScaleFactor, cubeScaleFactor);
         interactableInstance.transform.localPosition = Vector3.zero;
@@ -167,16 +186,14 @@ public class GameLogic : MonoBehaviour
         interactableCube.GetComponent<Renderer>().material = idle;
         
         //Add needed scripts
-        //interactableInstance.AddComponent<RotateOnMouseDrag>();
-        //interactableCube.AddComponent<ColorOnHover>();
+        interactableInstance.AddComponent<RotateOnMouseDrag>();
+        interactableCube.AddComponent<ColorOnHover>();
         interactableInstance.AddComponent<SnapAndContinue>();
 
         //Add variables for Rotate Script
-        //RotateOnMouseDrag rotateScript = interactableInstance.GetComponent<RotateOnMouseDrag>();
-        //rotateScript.correctMaterial = correct;
-        //rotateScript.idleMaterial = idle;
-        //rotateScript.AudioSource = audioSource;
-        //rotateScript.gameLogic = this;
+        RotateOnMouseDrag rotateScript = interactableInstance.GetComponent<RotateOnMouseDrag>();
+        rotateScript.idleMaterial = idle;
+        rotateScript.gameLogic = this;
         
         //Add variables for snapping
         SnapAndContinue snapScript = interactableInstance.GetComponent<SnapAndContinue>();
@@ -185,9 +202,9 @@ public class GameLogic : MonoBehaviour
         snapScript.gameLogic = this;
 
         //Add variables for Color Script
-        //ColorOnHover colorScript = interactableCube.GetComponent<ColorOnHover>();
-        //colorScript.idleMaterial = idle;
-        //colorScript.hoverMaterial = hover;
+        ColorOnHover colorScript = interactableCube.GetComponent<ColorOnHover>();
+        colorScript.idleMaterial = idle;
+        colorScript.hoverMaterial = hover;
     }
 
     private void DestroyAllChildren(GameObject parent)
@@ -207,5 +224,19 @@ public class GameLogic : MonoBehaviour
         }
 
         return doneTasks.ToString();
+    }
+
+    private void InitGizmo(GameObject interactableInstance)
+    {
+        gizmo.m_targetObject = interactableInstance;
+        gizmo.Init();
+    }
+
+    private void ResetGizmo()
+    {
+        gizmo.m_rotation.MouseUpCode(0);
+        gizmo.m_rotation.MouseUpCode(1);
+        gizmo.m_rotation.MouseUpCode(2);
+        gizmo.m_rotation.isDragAllowed = false; 
     }
 }
