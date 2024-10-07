@@ -108,7 +108,9 @@ namespace TransformGizmos
             if (!m_isDragging)
             {
                 m_renderers[axis].material = m_hoveredMaterials[axis];
+                m_renderers2[axis].material = m_hoveredMaterials[axis];
                 m_renderers[axis].material.SetInt(GUIZ_TEST_MODE, FRONT_RENDERING);
+                m_renderers2[axis].material.SetInt(GUIZ_TEST_MODE, FRONT_RENDERING);
             }
         }
 
@@ -117,7 +119,9 @@ namespace TransformGizmos
             if (!m_isDragging)
             {
                 m_renderers[axis].material = m_defaultMaterials[axis];
+                m_renderers2[axis].material = m_defaultMaterials[axis];
                 m_renderers[axis].material.SetInt(GUIZ_TEST_MODE, FRONT_RENDERING);
+                m_renderers2[axis].material.SetInt(GUIZ_TEST_MODE, FRONT_RENDERING);
             }
         }
 
@@ -207,7 +211,7 @@ namespace TransformGizmos
             m_objectWithMeshes.transform.parent = m_rotationAppendix.transform;
             m_renderers[axis].material = m_defaultMaterials[axis];
             m_renderers[axis].material.SetInt(GUIZ_TEST_MODE, FRONT_RENDERING);
-            m_renderers2[axis].material = m_gizmoTransparentMaterial;
+            m_renderers2[axis].material = m_defaultMaterials[axis];
             m_renderers2[axis].material.SetInt(GUIZ_TEST_MODE, FRONT_RENDERING);
             m_mesh.Clear();
             m_mesh2.Clear();
@@ -220,7 +224,9 @@ namespace TransformGizmos
             if (isDragAllowed)
             {
                 m_renderers[axis].material = m_clickedMaterial;
+                m_renderers2[axis].material = m_clickedMaterial;
                 m_renderers[axis].material.SetInt(GUIZ_TEST_MODE, FRONT_RENDERING);
+                m_renderers2[axis].material.SetInt(GUIZ_TEST_MODE, FRONT_RENDERING);
 
                 Vector2 moveVector = (Vector2)Input.mousePosition - initialMousePosition;
                 Vector2 projectedMoveVector = Vector3.Project(moveVector, tangent);
@@ -339,21 +345,6 @@ namespace TransformGizmos
             float horizontalAngle = Vector3.SignedAngle(forward, projectedHorizontalLookVector, down);
             float verticalAngle = Vector3.SignedAngle(forward, projectedVerticalLookVector, -left);
             float angleDiff;
-
-            //if both angles are within the range apply the material of the active half to the other half 
-            bool withinRange = verticalAngle < gizmoEpsilon && verticalAngle > -gizmoEpsilon && horizontalAngle < gizmoEpsilon && horizontalAngle > -gizmoEpsilon;
-            if (withinRange)
-            {
-                m_renderers2[axis].material = m_renderers[axis].material;
-                m_renderers2[axis].material.SetInt(GUIZ_TEST_MODE, FRONT_RENDERING);
-                return;
-            }
-
-            if (!m_isDragging)
-            {
-                m_renderers2[axis].material = m_gizmoTransparentMaterial;
-                m_renderers2[axis].material.SetInt(GUIZ_TEST_MODE, FRONT_RENDERING);
-            }
 
             if (verticalAngle >= 0 && horizontalAngle >= 0)
             {
