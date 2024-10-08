@@ -95,11 +95,11 @@ namespace TransformGizmos
                 m_maxDist = 1500 * 5 / m_rotateSpeed; //m_maxDist = 5 and m_rotateSpeed = 1500 are the default values
 
                 //X
-                RotateGizmos(0, -transform.right, transform.forward, -transform.up);
+               // RotateGizmos(0, -transform.right, transform.forward, -transform.up);
                 //Y
-                RotateGizmos(1, transform.up, transform.right, transform.forward);
+               // RotateGizmos(1, transform.up, transform.right, transform.forward);
                 //Z
-                RotateGizmos(2, transform.forward, transform.right, -transform.up);
+               // RotateGizmos(2, transform.forward, transform.right, -transform.up);
             }
         }
 
@@ -130,7 +130,7 @@ namespace TransformGizmos
             }
         }
 
-        public (Vector2, Vector2, Vector2, Vector3[]) MouseDownCode(Vector3 upVector, int axis)
+        public (Vector2, Vector2, Vector2, Vector2, Vector3[]) MouseDownCode(Vector3 upVector, int axis)
         {
             m_isDragging = true;
             isDragAllowed = true;
@@ -208,7 +208,7 @@ namespace TransformGizmos
                     m_tangent = -m_tangent;
             }
 
-            return (m_initialMousePosition, m_lastProjectedMousePosition, m_tangent, m_vertices);
+            return (m_initialMousePosition, m_lastProjectedMousePosition,(Vector2)Input.mousePosition, m_tangent, m_vertices);
         }
 
         public void MouseUpCode(int axis)
@@ -224,7 +224,7 @@ namespace TransformGizmos
             m_isDragging = false;
         }
 
-        public (float, Vector2) MouseDragCode(Vector2 initialMousePosition, Vector2 tangent, Vector2 lastProjectedMousePosition, float totalDist, Vector3[] vertices, int axis)
+        public (float, Vector2, Vector2) MouseDragCode(Vector2 initialMousePosition, Vector2 previousMousPosition, Vector2 tangent, Vector2 lastProjectedMousePosition, float totalDist, Vector3[] vertices, int axis)
         {
             if (isDragAllowed)
             {
@@ -232,48 +232,58 @@ namespace TransformGizmos
                 m_renderers2[axis].material = m_clickedMaterial;
                 m_renderers[axis].material.SetInt(GUIZ_TEST_MODE, FRONT_RENDERING);
                 m_renderers2[axis].material.SetInt(GUIZ_TEST_MODE, FRONT_RENDERING);
+                Vector2 currentMousePosition = Input.mousePosition;
 
-                Vector2 moveVector = (Vector2)Input.mousePosition - initialMousePosition;
-                Vector2 projectedMoveVector = Vector3.Project(moveVector, tangent);
-                Vector2 projectedPosition = initialMousePosition + projectedMoveVector;
-
-                float dotProduct = Vector2.Dot(projectedMoveVector, tangent);
-                float distNow = Vector2.Distance(projectedPosition, initialMousePosition);
-                float distBefore = Vector2.Distance(lastProjectedMousePosition, initialMousePosition);
-                float moveDist = Vector2.Distance(lastProjectedMousePosition, projectedPosition);
-                float dist;
-
-                if ((dotProduct > 0 && distNow > distBefore) || (dotProduct < 0 && distNow < distBefore))
-                    dist = -moveDist;
-                else
-                    dist = moveDist;
-
-                moveDist = dist / m_maxDist * 360;
-
-                switch (axis)
+                Vector2 moveVector;
+                if (axis == 1)
                 {
-                    case 0:
-                        m_targetObject.transform.Rotate(-Vector3.right, -moveDist, Space.World);
-                        break;
-                    case 1:
-                        m_targetObject.transform.Rotate(Vector3.up, moveDist, Space.World);
-                        break;
-                    case 2:
-                        m_targetObject.transform.Rotate(-Vector3.forward, moveDist, Space.World);
-                        break;
-                }
+                    // Calculate how much mouse moved
+                    moveVector = currentMousePosition - previousMousPosition;
 
-                totalDist += dist;
+                    // Calculate the rotation angle based on the mouse movement
+                    float rotationAngle = moveVector.magnitude / m_maxDist * 360;  // Scale the movement
+                    m_targetObject.transform.Rotate(Vector3.up, moveVector.x > 0 ? -rotationAngle : rotationAngle, Space.World);
+                }
+                else
+                {
+                    moveVector = (Vector2)Input.mousePosition - initialMousePosition;
+                    Vector2 projectedMoveVector = Vector3.Project(moveVector, tangent);
+                    Vector2 projectedPosition = initialMousePosition + projectedMoveVector;
+
+                    float dotProduct = Vector2.Dot(projectedMoveVector, tangent);
+                    float distNow = Vector2.Distance(projectedPosition, initialMousePosition);
+                    float distBefore = Vector2.Distance(lastProjectedMousePosition, initialMousePosition); 
+                    float moveDist = Vector2.Distance(lastProjectedMousePosition, projectedPosition);
+                    float dist;
+
+                    if ((dotProduct > 0 && distNow > distBefore) || (dotProduct < 0 && distNow < distBefore))
+                        dist = -moveDist;
+                    else
+                        dist = moveDist;
+
+                    moveDist = dist / m_maxDist * 360;
+
+                    switch (axis)
+                    {
+                        case 0:
+                            m_targetObject.transform.Rotate(-Vector3.right, -moveDist, Space.World);
+                            break;
+                        case 2:
+                            m_targetObject.transform.Rotate(-Vector3.forward, moveDist, Space.World);
+                            break;
+                    } 
+                    totalDist += dist;
+                }
 
                 ComputeAndShowTriangles(totalDist, m_mesh, m_mesh2, vertices);
 
                 (m_lastProjectedMousePosition, _) =
                     TransformationsUtility.HandleMouseOutsideScreen(initialMousePosition, tangent);
 
-                return (totalDist, m_lastProjectedMousePosition);
+                return (totalDist, m_lastProjectedMousePosition,currentMousePosition);
             }
 
-            return (0, m_lastProjectedMousePosition);
+            return (0, m_lastProjectedMousePosition, (Vector2)Input.mousePosition);
         }
 
         void ComputeAndShowTriangles(float totalDist, Mesh mesh, Mesh mesh2, Vector3[] vertices)
@@ -333,95 +343,6 @@ namespace TransformGizmos
             meshRenderer2.material.SetInt(GUIZ_TEST_MODE, FRONT_RENDERING);
             meshRenderer.material.renderQueue = 3002;
             meshRenderer2.material.renderQueue = 3002;
-        }
-
-        private void RotateGizmos(int axis, Vector3 forward, Vector3 down, Vector3 left)
-        {
-            Vector3 lookVector = Camera.main.transform.forward;
-            Vector3 projectedHorizontalLookVector = Vector3.ProjectOnPlane(lookVector, down);
-            Vector3 projectedVerticalLookVector = Vector3.ProjectOnPlane(lookVector, left);
-
-            if (Vector2.Dot(projectedHorizontalLookVector, forward) < 0)
-                projectedHorizontalLookVector = Vector3.Reflect(projectedHorizontalLookVector, forward);
-
-            if (Vector2.Dot(projectedVerticalLookVector, forward) < 0)
-                projectedVerticalLookVector = Vector3.Reflect(projectedVerticalLookVector, forward);
-
-            float horizontalAngle = Vector3.SignedAngle(forward, projectedHorizontalLookVector, down);
-            float verticalAngle = Vector3.SignedAngle(forward, projectedVerticalLookVector, -left);
-            float angleDiff;
-
-            if (verticalAngle >= 0 && horizontalAngle >= 0)
-            {
-                //top right
-                angleDiff = verticalAngle - horizontalAngle;
-                Quaternion finalRotation;
-
-                if (angleDiff >= 0)
-                    //vertical or diagonal
-                    finalRotation = Quaternion.Euler(0, Mathf.Min(angleDiff * 4 + 135, 180), 0);
-                else
-                    //horizontal
-                    finalRotation = Quaternion.Euler(0, Mathf.Max(angleDiff * 4 + 135, 90), 0);
-
-                m_renderers[axis].transform.localRotation = finalRotation;
-                m_renderers2[axis].transform.localRotation = finalRotation;
-            }
-            else if (verticalAngle >= 0 && horizontalAngle < 0)
-            {
-                horizontalAngle = -horizontalAngle;
-
-                //top left
-                angleDiff = verticalAngle - horizontalAngle;
-                Quaternion finalRotation;
-
-                if (angleDiff >= 0)
-                    //vertical or diagonal
-                    finalRotation = Quaternion.Euler(0, Mathf.Max(-angleDiff * 4 + 225, 180), 0);
-                else
-                    //horizontal
-                    finalRotation = Quaternion.Euler(0, Mathf.Min(-angleDiff * 4 + 225, 270), 0);
-
-                m_renderers[axis].transform.localRotation = finalRotation;
-                m_renderers2[axis].transform.localRotation = finalRotation;
-            }
-            else if (verticalAngle < 0 && horizontalAngle >= 0)
-            {
-                verticalAngle = -verticalAngle;
-
-                //bottom right
-                angleDiff = verticalAngle - horizontalAngle;
-                Quaternion finalRotation;
-
-                if (angleDiff >= 0)
-                    //vertical or diagonal
-                    finalRotation = Quaternion.Euler(0, Mathf.Max(-angleDiff * 4 + 45, 0), 0);
-                else
-                    //horizontal
-                    finalRotation = Quaternion.Euler(0, Mathf.Min(-angleDiff * 4 + 45, 90), 0);
-
-                m_renderers[axis].transform.localRotation = finalRotation;
-                m_renderers2[axis].transform.localRotation = finalRotation;
-            }
-            else if (verticalAngle < 0 && horizontalAngle < 0)
-            {
-                verticalAngle = -verticalAngle;
-                horizontalAngle = -horizontalAngle;
-
-                //bottom left
-                angleDiff = verticalAngle - horizontalAngle;
-                Quaternion finalRotation;
-
-                if (angleDiff >= 0)
-                    //vertical or diagonal
-                    finalRotation = Quaternion.Euler(0, Mathf.Min(angleDiff * 4 + 315, 360), 0);
-                else
-                    //horizontal
-                    finalRotation = Quaternion.Euler(0, Mathf.Max(angleDiff * 4 + 315, 270), 0);
-
-                m_renderers[axis].transform.localRotation = finalRotation;
-                m_renderers2[axis].transform.localRotation = finalRotation;
-            }
         }
     }
 }

@@ -13,6 +13,7 @@ namespace TransformGizmos
         Vector2 m_tangent;
         Vector2 m_initialMousePosition = Vector2.zero;
         Vector2 m_lastProjectedMousePosition = Vector2.zero;
+        Vector2 m_previousMousePosition = Vector2.zero;
 
         void Start()
         {
@@ -32,7 +33,7 @@ namespace TransformGizmos
         public void OnMouseDown()
         {
             m_totalDist = 0;
-            (m_initialMousePosition, m_lastProjectedMousePosition, m_tangent, m_vertices) = Rotation.Instance.MouseDownCode(transform.up, axis: 0);
+            (m_initialMousePosition, m_lastProjectedMousePosition, m_previousMousePosition ,m_tangent, m_vertices) = Rotation.Instance.MouseDownCode(transform.up, axis: 0);
         }
 
         public void OnMouseUp()
@@ -42,7 +43,7 @@ namespace TransformGizmos
 
         public void OnMouseDrag()
         {
-            (m_totalDist, m_lastProjectedMousePosition) = Rotation.Instance.MouseDragCode(m_initialMousePosition, m_tangent, m_lastProjectedMousePosition, m_totalDist, m_vertices, axis: 0);
+            (m_totalDist, m_lastProjectedMousePosition, m_previousMousePosition) = Rotation.Instance.MouseDragCode(m_initialMousePosition, m_previousMousePosition, m_tangent, m_lastProjectedMousePosition, m_totalDist, m_vertices, axis: 0);
         }
     }
 }
