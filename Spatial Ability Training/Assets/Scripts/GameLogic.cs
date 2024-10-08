@@ -32,9 +32,13 @@ public class GameLogic : MonoBehaviour
 
     public TextMeshProUGUI doneTasksText;
 
+    public int objectOffset;
+    private Quaternion defaultRotation;
+
     // Start is called before the first frame update
     void Start()
     {
+        defaultRotation = Quaternion.Euler(0,0,0);
         playedAngles = new SortedDictionary<string, List<int>>();
         InitalizeTask();
     }
@@ -73,8 +77,8 @@ public class GameLogic : MonoBehaviour
         DestroyAllChildren(interactabelParent);
 
         //Instantiate & Initialize new Cubes
-        var referenceInstance = Instantiate(cube, Vector3.zero, Quaternion.identity);
-        var interactableInstance = Instantiate(cube, Vector3.zero, Quaternion.Euler(angle, angle, 0));
+        GameObject referenceInstance = Instantiate(cube, Vector3.zero, defaultRotation);
+        GameObject interactableInstance = Instantiate(cube, Vector3.zero, Quaternion.Euler(angle, angle + objectOffset, 0));
         InitializeReference(referenceInstance);
         InitializeInteractableGizmo(interactableInstance);
         
@@ -174,6 +178,8 @@ public class GameLogic : MonoBehaviour
         snapScript.audioSource = audioSource;
         snapScript.correctMaterial = correct;
         snapScript.gameLogic = this;
+
+        interactableCube.GetComponent<MeshCollider>().enabled = false;
     }
     private void InitializeInteractableDrag(GameObject interactableInstance)
     {

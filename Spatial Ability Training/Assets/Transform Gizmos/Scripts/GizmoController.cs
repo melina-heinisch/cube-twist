@@ -15,6 +15,9 @@ namespace TransformGizmos
         [Header("Adjustable Variables")]
         [SerializeField] public GameObject m_targetObject;
         [SerializeField] float m_gizmoSize = 1;
+        
+        int gizmoOffset;
+        private Quaternion defaultGizmoRotation;
 
         void Start()
         {
@@ -24,18 +27,20 @@ namespace TransformGizmos
         void Update()
         {
             if (!(m_targetObject is null))
-            { 
-                transform.SetPositionAndRotation(m_targetObject.transform.position, m_targetObject.transform.rotation);
+            {
+                transform.position = m_targetObject.transform.position;
                 m_objectWithMeshes.transform.position = m_targetObject.transform.position;
                 m_rotation.SetGizmoSize(m_gizmoSize);  
             }
             
         }
 
-        public void Init()
+        public void Init(int offset = 0)
         {
-            m_rotation.Initialization(m_targetObject, m_clickedMaterial, m_transparentMaterial, m_objectWithMeshes, m_rotationAppendix);
-            transform.SetPositionAndRotation(m_targetObject.transform.position, m_targetObject.transform.rotation);
+            gizmoOffset = offset;
+            defaultGizmoRotation = Quaternion.Euler(0, offset, 0);
+            m_rotation.Initialization(m_targetObject, m_clickedMaterial, m_transparentMaterial, m_objectWithMeshes, m_rotationAppendix,gizmoOffset);
+            transform.SetPositionAndRotation(m_targetObject.transform.position, defaultGizmoRotation);
             transform.localScale = m_targetObject.transform.localScale;
         }
     }

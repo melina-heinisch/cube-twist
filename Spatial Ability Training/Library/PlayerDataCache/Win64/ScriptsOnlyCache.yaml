@@ -109,23 +109,25 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 546}
     - Class: 114
-      Script: {instanceID: 2390}
+      Script: {instanceID: 2388}
     - Class: 114
-      Script: {instanceID: 2712}
+      Script: {instanceID: 2710}
     - Class: 114
-      Script: {instanceID: 2896}
+      Script: {instanceID: 2894}
     - Class: 114
-      Script: {instanceID: 2984}
+      Script: {instanceID: 2982}
     - Class: 114
-      Script: {instanceID: 3132}
+      Script: {instanceID: 3130}
     - Class: 114
-      Script: {instanceID: 3298}
+      Script: {instanceID: 3296}
     - Class: 114
-      Script: {instanceID: 4570}
+      Script: {instanceID: 4568}
     - Class: 114
-      Script: {instanceID: 4696}
+      Script: {instanceID: 4694}
     - Class: 114
-      Script: {instanceID: 4998}
+      Script: {instanceID: 4996}
+    - Class: 114
+      Script: {instanceID: 5846}
     - Class: 114
       Script: {instanceID: 5866}
     - Class: 114
@@ -133,17 +135,15 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 6720}
     - Class: 114
-      Script: {instanceID: 7122}
+      Script: {instanceID: 6930}
     - Class: 114
-      Script: {instanceID: 7292}
+      Script: {instanceID: 7124}
     - Class: 114
-      Script: {instanceID: 9362}
+      Script: {instanceID: 7294}
     - Class: 114
-      Script: {instanceID: 9426}
+      Script: {instanceID: 9366}
     - Class: 114
-      Script: {instanceID: 9430}
-    - Class: 114
-      Script: {instanceID: 24886}
+      Script: {instanceID: 24922}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -171,12 +171,6 @@ ScriptsOnlyBuild:
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: RotateOnMouseDrag
-  - hash:
-      serializedVersion: 2
-      Hash: d5768aa23149241380fbc90dc5a9fde8
-    assemblyName: Assembly-CSharp
-    namespaceName: 
-    className: SnapAndContinue
   - hash:
       serializedVersion: 2
       Hash: d41ab9b5ea92474f9c0a6937a0607ce1
@@ -977,6 +971,12 @@ ScriptsOnlyBuild:
     className: WarpTextExample
   - hash:
       serializedVersion: 2
+      Hash: 9403449484b126b78681f063a5394e3f
+    assemblyName: Assembly-CSharp
+    namespaceName: TransformGizmos
+    className: GizmoController
+  - hash:
+      serializedVersion: 2
       Hash: 17f82e3e7d8f8b07a270a4aad9bfe79d
     assemblyName: Unity.TextMeshPro
     namespaceName: TMPro
@@ -1071,6 +1071,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.TextMeshPro
     namespaceName: TMPro
     className: TextMeshProUGUI
+  - hash:
+      serializedVersion: 2
+      Hash: 70d798fc9a8f56a8c998c853a2b7b603
+    assemblyName: Assembly-CSharp
+    namespaceName: 
+    className: GameLogic
   - hash:
       serializedVersion: 2
       Hash: da5a949a0bbd2ff91bc51c5805c2c41f
@@ -1397,6 +1403,12 @@ ScriptsOnlyBuild:
     className: TMP_PhoneNumberValidator
   - hash:
       serializedVersion: 2
+      Hash: d5768aa23149241380fbc90dc5a9fde8
+    assemblyName: Assembly-CSharp
+    namespaceName: 
+    className: SnapAndContinue
+  - hash:
+      serializedVersion: 2
       Hash: c4ae0ec287bc3cde0bc98e1a65f9cef7
     assemblyName: Assembly-CSharp
     namespaceName: TMPro.Examples
@@ -1479,18 +1491,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.VisualScripting.Core
     namespaceName: Unity.VisualScripting
     className: UnityOnSliderValueChangedMessageListener
-  - hash:
-      serializedVersion: 2
-      Hash: 9403449484b126b78681f063a5394e3f
-    assemblyName: Assembly-CSharp
-    namespaceName: TransformGizmos
-    className: GizmoController
-  - hash:
-      serializedVersion: 2
-      Hash: 70d798fc9a8f56a8c998c853a2b7b603
-    assemblyName: Assembly-CSharp
-    namespaceName: 
-    className: GameLogic
   platform: 19
   scenePathNames:
   - Assets/Scenes/SampleScene.unity

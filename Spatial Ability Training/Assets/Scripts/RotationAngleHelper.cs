@@ -29,13 +29,14 @@ public class RotationAngleHelper: MonoBehaviour
         return angle;
     }
     
-    public static bool IsRotationWithinLimits(Vector3 eulerAngles, float maxAngle)
+    public static bool IsRotationWithinLimits(Vector3 eulerAngles, float maxAngle, int offset = 0)
     {
         var x = Mathf.Abs(eulerAngles.x);
         var y = Mathf.Abs(eulerAngles.y);
         var z = Mathf.Abs(eulerAngles.z);
+        //Add offset degrees on y, so if they are slightly turned we still get correct result
         return (x <= maxAngle || x >= (360 - maxAngle)) &&
-               (y <= maxAngle || y >= (360 - maxAngle)) &&
+               (y <= maxAngle+ offset || y >= (360 - maxAngle-offset)) &&
                (z <= maxAngle || z >= (360 - maxAngle));
     }
     

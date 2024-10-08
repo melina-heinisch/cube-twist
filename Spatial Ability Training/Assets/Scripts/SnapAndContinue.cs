@@ -31,7 +31,7 @@ public class SnapAndContinue : MonoBehaviour
 
     void CheckForSnapping()
     {
-        if (RotationAngleHelper.IsRotationWithinLimits(transform.localEulerAngles,10))
+        if (RotationAngleHelper.IsRotationWithinLimits(transform.localEulerAngles,10, gameLogic.objectOffset))
         {
             isRotateDone = true;
             transform.rotation = Quaternion.identity;

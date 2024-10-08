@@ -37,6 +37,9 @@ namespace TransformGizmos
         // this sets the material rendering to always be in front of other objects
         const int FRONT_RENDERING = (int)UnityEngine.Rendering.CompareFunction.Always;
         public static Rotation Instance { get; private set; }
+        private int gizmoOffset = 0;
+        private Quaternion defaultGizmoRotation;
+        
 
         void Awake()
         {
@@ -50,13 +53,15 @@ namespace TransformGizmos
             Destroy(gameObject);
         }
 
-        public void Initialization(GameObject targetObject, Material clickedMaterial, Material gizmoTransparentMaterial, GameObject objectWithMeshes, GameObject rotationAppendix)
+        public void Initialization(GameObject targetObject, Material clickedMaterial, Material gizmoTransparentMaterial, GameObject objectWithMeshes, GameObject rotationAppendix, int offset)
         {
+            gizmoOffset = offset;
+            defaultGizmoRotation = Quaternion.Euler(0,offset,0);
             m_targetObject = targetObject;
             m_clickedMaterial = clickedMaterial;
             m_objectWithMeshes = objectWithMeshes;
             m_rotationAppendix = rotationAppendix;
-            m_objectWithMeshes.transform.rotation = m_targetObject.transform.rotation;
+            m_objectWithMeshes.transform.rotation = defaultGizmoRotation;
             m_mesh = new Mesh();
             m_objectWithMeshes.transform.GetChild(0).GetComponent<MeshFilter>().mesh = m_mesh;
             m_objectWithMeshes.transform.GetChild(0).GetComponent<MeshRenderer>().material = m_clickedMaterial;
@@ -215,7 +220,7 @@ namespace TransformGizmos
             m_renderers2[axis].material.SetInt(GUIZ_TEST_MODE, FRONT_RENDERING);
             m_mesh.Clear();
             m_mesh2.Clear();
-            m_objectWithMeshes.transform.rotation = m_targetObject.transform.rotation;
+            m_objectWithMeshes.transform.rotation = defaultGizmoRotation;
             m_isDragging = false;
         }
 
@@ -248,13 +253,13 @@ namespace TransformGizmos
                 switch (axis)
                 {
                     case 0:
-                        m_targetObject.transform.Rotate(-m_targetObject.transform.right, -moveDist, Space.World);
+                        m_targetObject.transform.Rotate(-Vector3.right, -moveDist, Space.World);
                         break;
                     case 1:
-                        m_targetObject.transform.Rotate(-m_targetObject.transform.up, moveDist, Space.World);
+                        m_targetObject.transform.Rotate(Vector3.up, moveDist, Space.World);
                         break;
                     case 2:
-                        m_targetObject.transform.Rotate(-m_targetObject.transform.forward, moveDist, Space.World);
+                        m_targetObject.transform.Rotate(-Vector3.forward, moveDist, Space.World);
                         break;
                 }
 
