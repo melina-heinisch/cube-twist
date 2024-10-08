@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,8 @@ public class SnapAndContinue : MonoBehaviour
     [FormerlySerializedAs("AudioSource")] public AudioSource audioSource;
 
     public GameLogic gameLogic;
+
+    private int SsnapGraceRange = 16;
     
     // Update is called once per frame
     void Update()
@@ -21,23 +24,23 @@ public class SnapAndContinue : MonoBehaviour
         {
           CheckForSnapping();
         }
-        else
-        {
-            gameLogic.GetComponent<GameLogic>().taskFinished = true;
-            isRotateDone = false;
-        }
-        
+
     }
 
     void CheckForSnapping()
     {
-        if (RotationAngleHelper.IsRotationWithinLimits(transform.localEulerAngles,10, gameLogic.objectOffset))
+        if (!isRotateDone)
         {
-            isRotateDone = true;
-            transform.rotation = Quaternion.identity;
-
-            GivePositiveFeedback();
+             if (RotationAngleHelper.IsRotationWithinLimits(transform.localEulerAngles,SsnapGraceRange/2, gameLogic.objectOffset))
+             {
+                 isRotateDone = true;
+                 gameLogic.GetComponent<GameLogic>().taskFinished = true;
+                 transform.rotation = Quaternion.Euler(0,gameLogic.objectOffset,0);
+     
+                 GivePositiveFeedback();
+             }   
         }
+        
     }
 
     void GivePositiveFeedback()
@@ -45,5 +48,9 @@ public class SnapAndContinue : MonoBehaviour
         transform.Find("Cube").gameObject.GetComponent<Renderer>().material = correctMaterial;
         audioSource.Play();
     }
-    
+
+    public void Reset()
+    {
+        isRotateDone = false;
+    }
 }

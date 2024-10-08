@@ -36,7 +36,7 @@ public class RotationAngleHelper: MonoBehaviour
         var z = Mathf.Abs(eulerAngles.z);
         //Add offset degrees on y, so if they are slightly turned we still get correct result
         return (x <= maxAngle || x >= (360 - maxAngle)) &&
-               (y <= maxAngle+ offset || y >= (360 - maxAngle-offset)) &&
+               (y <= maxAngle+offset && y >= (offset-maxAngle)) &&
                (z <= maxAngle || z >= (360 - maxAngle));
     }
     
