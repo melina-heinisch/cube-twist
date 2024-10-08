@@ -36,8 +36,6 @@ ScriptsOnlyBuild:
     - UnityEditor.TestTools.TestRunner.TestListCacheData
     - UnityEditor.TestTools.TestRunner.TestRun.TestJobDataHolder
     UnityEngine.UI.dll:
-    - UnityEngine.EventSystems.EventSystem
-    - UnityEngine.EventSystems.StandaloneInputModule
     - UnityEngine.UI.CanvasScaler
     - UnityEngine.UI.GraphicRaycaster
   serializedClasses:
@@ -69,7 +67,7 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.MaskableGraphic/CullStateChangedEvent
   methodsToPreserve: []
   sceneClasses:
-    Assets/Scenes/SampleScene.unity:
+    Assets/Scenes/SpatialAbilityTraining.unity:
     - Class: 1
       Script: {instanceID: 0}
     - Class: 4
@@ -109,41 +107,37 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 546}
     - Class: 114
-      Script: {instanceID: 2388}
+      Script: {instanceID: 1618}
     - Class: 114
-      Script: {instanceID: 2710}
+      Script: {instanceID: 2392}
     - Class: 114
-      Script: {instanceID: 2894}
+      Script: {instanceID: 2714}
     - Class: 114
-      Script: {instanceID: 2982}
+      Script: {instanceID: 2986}
     - Class: 114
-      Script: {instanceID: 3130}
+      Script: {instanceID: 3134}
     - Class: 114
-      Script: {instanceID: 3296}
+      Script: {instanceID: 3300}
     - Class: 114
-      Script: {instanceID: 4568}
+      Script: {instanceID: 4572}
     - Class: 114
-      Script: {instanceID: 4694}
+      Script: {instanceID: 4698}
     - Class: 114
-      Script: {instanceID: 4996}
+      Script: {instanceID: 5000}
     - Class: 114
-      Script: {instanceID: 5846}
+      Script: {instanceID: 5850}
     - Class: 114
-      Script: {instanceID: 5866}
+      Script: {instanceID: 5870}
     - Class: 114
-      Script: {instanceID: 6534}
+      Script: {instanceID: 6538}
     - Class: 114
-      Script: {instanceID: 6720}
+      Script: {instanceID: 6724}
     - Class: 114
-      Script: {instanceID: 6930}
+      Script: {instanceID: 9364}
     - Class: 114
-      Script: {instanceID: 7124}
+      Script: {instanceID: 9428}
     - Class: 114
-      Script: {instanceID: 7294}
-    - Class: 114
-      Script: {instanceID: 9366}
-    - Class: 114
-      Script: {instanceID: 24922}
+      Script: {instanceID: 24978}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -171,6 +165,18 @@ ScriptsOnlyBuild:
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: RotateOnMouseDrag
+  - hash:
+      serializedVersion: 2
+      Hash: f0f77c0855ff15ab700f42f889a7e918
+    assemblyName: Assembly-CSharp
+    namespaceName: TransformGizmos
+    className: Rotation
+  - hash:
+      serializedVersion: 2
+      Hash: d5768aa23149241380fbc90dc5a9fde8
+    assemblyName: Assembly-CSharp
+    namespaceName: 
+    className: SnapAndContinue
   - hash:
       serializedVersion: 2
       Hash: d41ab9b5ea92474f9c0a6937a0607ce1
@@ -1073,12 +1079,6 @@ ScriptsOnlyBuild:
     className: TextMeshProUGUI
   - hash:
       serializedVersion: 2
-      Hash: 70d798fc9a8f56a8c998c853a2b7b603
-    assemblyName: Assembly-CSharp
-    namespaceName: 
-    className: GameLogic
-  - hash:
-      serializedVersion: 2
       Hash: da5a949a0bbd2ff91bc51c5805c2c41f
     assemblyName: Unity.VisualScripting.Core
     namespaceName: Unity.VisualScripting
@@ -1143,12 +1143,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.InputSystem
     namespaceName: UnityEngine.InputSystem.Editor
     className: PlayerInputEditor
-  - hash:
-      serializedVersion: 2
-      Hash: f0f77c0855ff15ab700f42f889a7e918
-    assemblyName: Assembly-CSharp
-    namespaceName: TransformGizmos
-    className: Rotation
   - hash:
       serializedVersion: 2
       Hash: a92561298b80715aa69e8fa770123cb5
@@ -1403,12 +1397,6 @@ ScriptsOnlyBuild:
     className: TMP_PhoneNumberValidator
   - hash:
       serializedVersion: 2
-      Hash: d5768aa23149241380fbc90dc5a9fde8
-    assemblyName: Assembly-CSharp
-    namespaceName: 
-    className: SnapAndContinue
-  - hash:
-      serializedVersion: 2
       Hash: c4ae0ec287bc3cde0bc98e1a65f9cef7
     assemblyName: Assembly-CSharp
     namespaceName: TMPro.Examples
@@ -1491,8 +1479,14 @@ ScriptsOnlyBuild:
     assemblyName: Unity.VisualScripting.Core
     namespaceName: Unity.VisualScripting
     className: UnityOnSliderValueChangedMessageListener
+  - hash:
+      serializedVersion: 2
+      Hash: 451e48d337806541ac39dcd593791936
+    assemblyName: Assembly-CSharp
+    namespaceName: 
+    className: GameLogic
   platform: 19
   scenePathNames:
-  - Assets/Scenes/SampleScene.unity
-  playerPath: C:/Uni/Masterarbeit/Projektcode/Build MRT/MentalRotationTrainingVersion1/Mental
+  - Assets/Scenes/SpatialAbilityTraining.unity
+  playerPath: C:/Uni/Masterarbeit/Projektcode/Build MRT/TraningVersionGizmoImproved/Mental
     Rotation Training.exe

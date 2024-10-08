@@ -35,6 +35,8 @@ public class GameLogic : MonoBehaviour
     public int objectOffset;
     private Quaternion defaultRotation;
 
+    private GameObject currentInteractable;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -49,14 +51,14 @@ public class GameLogic : MonoBehaviour
         if (taskFinished)
         {
             doneTasksText.text = CountFinishedTasks();
+            taskFinished = false;
             ResetGizmo();
-            InitalizeTask();
+            StartCoroutine(WaitAndInitializeTask(1f));
         }
     }
 
     void InitalizeTask()
     {
-        taskFinished = false;
         int angle = -1;
         GameObject cube = SelectCube();
 
@@ -79,9 +81,10 @@ public class GameLogic : MonoBehaviour
         //Instantiate & Initialize new Cubes
         GameObject referenceInstance = Instantiate(cube, Vector3.zero, defaultRotation);
         GameObject interactableInstance = Instantiate(cube, Vector3.zero, Quaternion.Euler(angle, angle + objectOffset, 0));
+        currentInteractable = interactableInstance;
         InitializeReference(referenceInstance);
         InitializeInteractableGizmo(interactableInstance);
-        
+
         InitGizmo(interactableInstance);
         
     }
@@ -244,5 +247,15 @@ public class GameLogic : MonoBehaviour
         gizmo.m_rotation.MouseUpCode(1);
         gizmo.m_rotation.MouseUpCode(2);
         gizmo.m_rotation.isDragAllowed = false; 
+    }
+    
+    private IEnumerator WaitAndInitializeTask(float delay)
+    {
+        // Wait for the specified duration
+        yield return new WaitForSeconds(delay);
+
+        // Now that the delay is over, initialize the next task
+        InitalizeTask();
+        currentInteractable.GetComponent<SnapAndContinue>().Reset();
     }
 }
