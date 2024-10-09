@@ -37,7 +37,7 @@ namespace TransformGizmos
         // this sets the material rendering to always be in front of other objects
         const int FRONT_RENDERING = (int)UnityEngine.Rendering.CompareFunction.Always;
         public static Rotation Instance { get; private set; }
-        private int gizmoOffset = 0;
+        private float gizmoOffset = 0;
         private Quaternion defaultGizmoRotation;
         
 
@@ -53,10 +53,10 @@ namespace TransformGizmos
             Destroy(gameObject);
         }
 
-        public void Initialization(GameObject targetObject, Material clickedMaterial, Material gizmoTransparentMaterial, GameObject objectWithMeshes, GameObject rotationAppendix, int offset)
+        public void Initialization(GameObject targetObject, Material clickedMaterial, Material gizmoTransparentMaterial, GameObject objectWithMeshes, GameObject rotationAppendix, float offset)
         {
             gizmoOffset = offset;
-            defaultGizmoRotation = Quaternion.Euler(0,offset,0);
+            defaultGizmoRotation = Quaternion.Euler(0,gizmoOffset,0);
             m_targetObject = targetObject;
             m_clickedMaterial = clickedMaterial;
             m_objectWithMeshes = objectWithMeshes;

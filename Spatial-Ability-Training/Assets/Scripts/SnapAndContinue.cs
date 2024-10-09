@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -34,7 +35,10 @@ public class SnapAndContinue : MonoBehaviour
              if (RotationAngleHelper.IsRotationWithinLimits(transform.localEulerAngles,SsnapGraceRange/2, gameLogic.objectOffset))
              {
                  isRotateDone = true;
-                 gameLogic.GetComponent<GameLogic>().taskFinished = true;
+                 if (gameLogic.isActiveAndEnabled)
+                 {
+                     gameLogic.GetComponent<GameLogic>().taskFinished = true; 
+                 }
                  transform.rotation = Quaternion.Euler(0,gameLogic.objectOffset,0);
      
                  GivePositiveFeedback();

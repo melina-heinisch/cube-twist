@@ -16,7 +16,7 @@ namespace TransformGizmos
         [SerializeField] public GameObject m_targetObject;
         [SerializeField] float m_gizmoSize = 1;
         
-        int gizmoOffset;
+        float gizmoOffset;
         private Quaternion defaultGizmoRotation;
 
         void Start()
@@ -35,7 +35,7 @@ namespace TransformGizmos
             
         }
 
-        public void Init(int offset = 0)
+        public void Init(float offset = 0)
         {
             gizmoOffset = offset;
             defaultGizmoRotation = Quaternion.Euler(0, offset, 0);

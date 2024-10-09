@@ -28,21 +28,39 @@ public class GameLogic : MonoBehaviour
 
     [HideInInspector] public bool taskFinished = false;
 
-    public GizmoController gizmo;
+    public GameObject gizmo;
 
     public TextMeshProUGUI doneTasksText;
+    
+    public TextMeshProUGUI totalTasksText;
 
     public int objectOffset;
-    private Quaternion defaultRotation;
+    public float gizmoOffset;
+    
+    private Quaternion defaultReferenceRotation;
 
     private GameObject currentInteractable;
 
+    private TaskLogManager taskLogManager;
+
+    private bool isTutorial = true;
+
+    private int tutorialLength = 6;
+    
     // Start is called before the first frame update
     void Start()
     {
-        defaultRotation = Quaternion.Euler(0,0,0);
+        taskLogManager = new TaskLogManager();
+        Cursor.lockState = CursorLockMode.Confined;
+        defaultReferenceRotation = Quaternion.Euler(0,0,0);
         playedAngles = new SortedDictionary<string, List<int>>();
-        InitalizeTask();
+
+        if (isTutorial)
+        {
+            totalTasksText.text = "/  6";
+        }
+            InitalizeTask();
+            gizmo.GetComponent<PulseMaterial>().ActivateFlash();
     }
 
     // Update is called once per frame
@@ -50,11 +68,37 @@ public class GameLogic : MonoBehaviour
     {
         if (taskFinished)
         {
-            doneTasksText.text = CountFinishedTasks();
+            int finishedTasks = CountFinishedTasks();
+            taskLogManager.FinishTask();
             taskFinished = false;
             ResetGizmo();
+            if (isTutorial)
+            {
+                doneTasksText.text = "Tutorial: " + finishedTasks;
+                if (finishedTasks >= tutorialLength)
+                {
+                    isTutorial = false;
+                    doneTasksText.text = "0";
+                    totalTasksText.text = "/ 90";
+                }
+            }
+            else
+            {
+                doneTasksText.text = (finishedTasks-tutorialLength).ToString();
+            }
             StartCoroutine(WaitAndInitializeTask(1f));
+
         }
+        
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            taskLogManager.SaveLogsToFile();
+        }
+    }
+    
+    private void OnApplicationQuit()
+    {
+        taskLogManager.SaveLogsToFile();
     }
 
     void InitalizeTask()
@@ -79,14 +123,15 @@ public class GameLogic : MonoBehaviour
         DestroyAllChildren(interactabelParent);
 
         //Instantiate & Initialize new Cubes
-        GameObject referenceInstance = Instantiate(cube, Vector3.zero, defaultRotation);
+        GameObject referenceInstance = Instantiate(cube, Vector3.zero, defaultReferenceRotation);
         GameObject interactableInstance = Instantiate(cube, Vector3.zero, Quaternion.Euler(angle, angle + objectOffset, 0));
         currentInteractable = interactableInstance;
         InitializeReference(referenceInstance);
         InitializeInteractableGizmo(interactableInstance);
 
         InitGizmo(interactableInstance);
-        
+
+        taskLogManager.StartTask(cube.name, angle);
     }
 
     GameObject SelectCube()
@@ -224,7 +269,7 @@ public class GameLogic : MonoBehaviour
         }
     }
 
-    private string CountFinishedTasks()
+    private int CountFinishedTasks()
     {
         int doneTasks = 0;
         foreach (var (key, value) in playedAngles)
@@ -232,21 +277,21 @@ public class GameLogic : MonoBehaviour
             doneTasks += value.Count;
         }
 
-        return doneTasks.ToString();
+        return doneTasks;
     }
 
     private void InitGizmo(GameObject interactableInstance)
     {
-        gizmo.m_targetObject = interactableInstance;
-        gizmo.Init();
+        gizmo.GetComponent<GizmoController>().m_targetObject = interactableInstance;
+        gizmo.GetComponent<GizmoController>().Init(gizmoOffset);
     }
 
     private void ResetGizmo()
     {
-        gizmo.m_rotation.MouseUpCode(0);
-        gizmo.m_rotation.MouseUpCode(1);
-        gizmo.m_rotation.MouseUpCode(2);
-        gizmo.m_rotation.isDragAllowed = false; 
+        gizmo.GetComponent<GizmoController>().m_rotation.MouseUpCode(0);
+        gizmo.GetComponent<GizmoController>().m_rotation.MouseUpCode(1);
+        gizmo.GetComponent<GizmoController>().m_rotation.MouseUpCode(2);
+        gizmo.GetComponent<GizmoController>().m_rotation.isDragAllowed = false; 
     }
     
     private IEnumerator WaitAndInitializeTask(float delay)
