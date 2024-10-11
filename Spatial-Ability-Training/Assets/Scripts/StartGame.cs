@@ -38,8 +38,6 @@ public class StartGame : MonoBehaviour
     {
         if (rotate)
         {
-            Debug.Log("Rotate True");
-            Debug.Log("Current Rotate: " +  example.gameObject.transform.rotation);
             // Rotate towards the target rotation at a constant speed (degrees per second)
             example.gameObject.transform.rotation = Quaternion.RotateTowards(
                 example.gameObject.transform.rotation,   // Current rotation
@@ -50,7 +48,6 @@ public class StartGame : MonoBehaviour
             // Optional: Stop the rotation if we've reached the target
             if (example.gameObject.transform.rotation == Quaternion.Euler(0,35,0))
             {
-                Debug.Log("Rotation completed");
                 rotate = false;
                 StartCoroutine(WaitAndInitializeGame(2f));
             }  
@@ -74,14 +71,9 @@ public class StartGame : MonoBehaviour
     public void InitiateGame()
     {
         tutorialText.GetComponent<TextMeshProUGUI>().text =
-            "Nutze dafür die Kreise um das Objekt, um es an einer der drei Achsen zu drehen. Probiere es selbst!";
+            "Klicke und ziehe dafür die Kreise um das Objekt, um es an einer der drei Achsen zu drehen. Probiere es selbst!";
         counter.SetActive(true);
         gameLogic.SetActive(true);
         gizmo.SetActive(true);
     }
-    
-    //Idee: Sample Objekte nehmen, das rechte dann Skriptseitig rotieren,
-    //und so demonstrieren was gemeint ist. Am besten im Abstimmung mit erscheinendem Text
-    //Dann erst eigentliches Spiel laden (alles aktivierne), und Text in die Richtung "nutze dieses Tool dafür"
-
 }

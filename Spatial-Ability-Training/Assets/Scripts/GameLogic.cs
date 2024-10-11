@@ -33,6 +33,8 @@ public class GameLogic : MonoBehaviour
     public TextMeshProUGUI doneTasksText;
     
     public TextMeshProUGUI totalTasksText;
+    
+    public GameObject tutorialText;
 
     public int objectOffset;
     public float gizmoOffset;
@@ -57,10 +59,9 @@ public class GameLogic : MonoBehaviour
 
         if (isTutorial)
         {
-            totalTasksText.text = "/  6";
+            totalTasksText.text = "/6";
         }
             InitalizeTask();
-            gizmo.GetComponent<PulseMaterial>().ActivateFlash();
     }
 
     // Update is called once per frame
@@ -77,9 +78,10 @@ public class GameLogic : MonoBehaviour
                 doneTasksText.text = "Tutorial: " + finishedTasks;
                 if (finishedTasks >= tutorialLength)
                 {
+                    tutorialText.SetActive(false);
                     isTutorial = false;
                     doneTasksText.text = "0";
-                    totalTasksText.text = "/ 90";
+                    totalTasksText.text = "/90";
                 }
             }
             else
@@ -298,9 +300,43 @@ public class GameLogic : MonoBehaviour
     {
         // Wait for the specified duration
         yield return new WaitForSeconds(delay);
+        
+        if (isTutorial)
+        {
+            int finishedTasks = CountFinishedTasks();
+            UpdateTutorial(finishedTasks);
+        }
 
         // Now that the delay is over, initialize the next task
         InitalizeTask();
         currentInteractable.GetComponent<SnapAndContinue>().Reset();
+    }
+
+    private void UpdateTutorial(int tasksDone)
+    {
+        TextMeshProUGUI text = tutorialText.GetComponent<TextMeshProUGUI>();
+        switch (tasksDone)
+        {
+            case 1:
+                text.text = "Super! Jeder der drei Kreise steuert eine Achse separat. Es gibt also viele verschiedene Wege, um das Objekt richtig zu drehen. Teste es selbst!";
+                break;
+            case 2:
+                text.text = "Das klappt schon super! Sobald das Objekt in einem gewissen Abstand zum richtigen Winkel ist, rastet es automatisch ein. Achte mal drauf!";
+
+                break;
+            case 3:
+                text.text = "Das war klasse! Die zu drehenden Objekt und deren Winkel wechsel mit jeder Aufgabe. Versuch es nochmal!";
+
+                break;
+            case 4:
+                text.text = "Gut gemacht! Oben rechts im Eck findest du deinen aktuellen Fortschritt bei den Aufgaben, so hast du diesen immer im Blick. Sieh selbt, wie er nach dieser Aufgabe hochzählt!";
+
+                break;
+            case 5:
+                text.text = "Toll! Nach dieser Aufgabe starten nun das Spiel, viel Erfolg!";
+                break;
+            default:
+                break;
+        }
     }
 }
