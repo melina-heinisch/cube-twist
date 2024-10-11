@@ -71,7 +71,7 @@ public class StartGame : MonoBehaviour
     public void InitiateGame()
     {
         tutorialText.GetComponent<TextMeshProUGUI>().text =
-            "Klicke und ziehe dafür die Kreise um das Objekt, um es an einer der drei Achsen zu drehen. Probiere es selbst!";
+            "Klicke und ziehe die Kreise um das Objekt, um es an einer der drei Achsen zu drehen. Probiere es selbst und drehe das Objekt, sodass es genau wie das Linke gedreht ist!";
         counter.SetActive(true);
         gameLogic.SetActive(true);
         gizmo.SetActive(true);

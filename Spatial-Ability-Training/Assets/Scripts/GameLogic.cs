@@ -48,6 +48,9 @@ public class GameLogic : MonoBehaviour
     private bool isTutorial = true;
 
     private int tutorialLength = 6;
+
+    public GameObject goal;
+    public GameObject rotateHere;
     
     // Start is called before the first frame update
     void Start()
@@ -60,8 +63,10 @@ public class GameLogic : MonoBehaviour
         if (isTutorial)
         {
             totalTasksText.text = "/6";
+            goal.SetActive(true);
+            rotateHere.SetActive(true);
         }
-            InitalizeTask();
+        InitalizeTask();
     }
 
     // Update is called once per frame
@@ -318,18 +323,19 @@ public class GameLogic : MonoBehaviour
         switch (tasksDone)
         {
             case 1:
-                text.text = "Super! Jeder der drei Kreise steuert eine Achse separat. Es gibt also viele verschiedene Wege, um das Objekt richtig zu drehen. Teste es selbst!";
+                goal.SetActive(false);
+                rotateHere.SetActive(false);
+                text.text = "Das klappt schon super! Sobald das Objekt in einem gewissen Abstand zum richtigen Winkel ist, rastet es automatisch ein. Achte mal darauf!";
                 break;
             case 2:
-                text.text = "Das klappt schon super! Sobald das Objekt in einem gewissen Abstand zum richtigen Winkel ist, rastet es automatisch ein. Achte mal drauf!";
-
+                text.text = "Super! Jeder der drei Kreise steuert eine Achse separat. Es gibt also viele verschiedene Wege, um das Objekt richtig zu drehen. Teste es selbst!";
                 break;
             case 3:
-                text.text = "Das war klasse! Die zu drehenden Objekt und deren Winkel wechsel mit jeder Aufgabe. Versuch es nochmal!";
+                text.text = "Das war klasse! Die zu drehenden Objekte und deren Winkel wechsel mit jeder Aufgabe. Versuche es nochmal!";
 
                 break;
             case 4:
-                text.text = "Gut gemacht! Oben rechts im Eck findest du deinen aktuellen Fortschritt bei den Aufgaben, so hast du diesen immer im Blick. Sieh selbt, wie er nach dieser Aufgabe hochzählt!";
+                text.text = "Gut gemacht! Oben rechts im Eck findest du den aktuellen Fortschritt der Aufgaben, so hast du diesen immer im Blick. Sieh selbst, wie er nach dieser Aufgabe hochzählt!";
 
                 break;
             case 5:
