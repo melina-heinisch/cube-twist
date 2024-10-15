@@ -20,7 +20,6 @@ public class GameLogic : MonoBehaviour
     private float cubeScaleFactor = 0.3f;
 
     public List<GameObject> cubePrefabs;
-    public List<GameObject> testcubePrefabs;
 
     private SortedDictionary<string, List<int>> playedAngles;
 
@@ -101,15 +100,15 @@ public class GameLogic : MonoBehaviour
                 StartCoroutine(WaitAndInitializeTask(1f));
 
             }
-            else
-            {
-                gizmo.SetActive(false);
-                interactabelParent.SetActive(false);
-                referenceParent.SetActive(false);
-                tutorialText.SetActive(true);
-                tutorialText.GetComponent<TextMeshProUGUI>().text =
-                    "Super, du hast alle Aufgaben bearbeitet! Melde dich jetzt bei der Versuchsleitung.";
-            }
+        }
+        else
+        {
+            gizmo.SetActive(false);
+            interactabelParent.SetActive(false);
+            referenceParent.SetActive(false);
+            tutorialText.SetActive(true);
+            tutorialText.GetComponent<TextMeshProUGUI>().text =
+                "Super, du hast alle Aufgaben bearbeitet! Melde dich jetzt bei der Versuchsleitung.";
         }
         
         
