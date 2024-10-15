@@ -25,7 +25,7 @@ public class TaskLogManager
     public void FinishTask()
     {
         float timeSpent = Time.time - taskStartTime; // Calculate time spent
-        TaskLog log = new TaskLog(cube, angle, timeSpent);
+        TaskLog log = new TaskLog(currentTaskId, cube, angle, timeSpent);
         taskLogs.Add(currentTaskId, log); // Store the log
     }
 
@@ -44,7 +44,7 @@ public class TaskLogManager
                 
             using (StreamWriter writer = new StreamWriter(filePath, false))
             {
-                writer.WriteLine("Cube, Angle, Time Spent (s)"); // Write header
+                writer.WriteLine("Order, Cube, Angle, Time Spent (s)"); // Write header
                 foreach (var log in taskLogs.Values)
                 {
                     writer.WriteLine(log.ToString()); // Write each log

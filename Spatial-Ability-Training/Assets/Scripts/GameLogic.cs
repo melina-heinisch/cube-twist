@@ -20,6 +20,7 @@ public class GameLogic : MonoBehaviour
     private float cubeScaleFactor = 0.3f;
 
     public List<GameObject> cubePrefabs;
+    public List<GameObject> testcubePrefabs;
 
     private SortedDictionary<string, List<int>> playedAngles;
 
@@ -51,6 +52,8 @@ public class GameLogic : MonoBehaviour
 
     public GameObject goal;
     public GameObject rotateHere;
+
+    private bool isGameRunning = true;
     
     // Start is called before the first frame update
     void Start()
@@ -72,30 +75,43 @@ public class GameLogic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (taskFinished)
+        if (isGameRunning)
         {
-            int finishedTasks = CountFinishedTasks();
-            taskLogManager.FinishTask();
-            taskFinished = false;
-            ResetGizmo();
-            if (isTutorial)
+            if (taskFinished)
             {
-                doneTasksText.text = "Tutorial: " + finishedTasks;
-                if (finishedTasks >= tutorialLength)
+                int finishedTasks = CountFinishedTasks();
+                taskLogManager.FinishTask();
+                taskFinished = false;
+                ResetGizmo();
+                if (isTutorial)
                 {
-                    tutorialText.SetActive(false);
-                    isTutorial = false;
-                    doneTasksText.text = "0";
-                    totalTasksText.text = "/90";
+                    doneTasksText.text = "Tutorial: " + finishedTasks;
+                    if (finishedTasks >= tutorialLength)
+                    {
+                        tutorialText.SetActive(false);
+                        isTutorial = false;
+                        doneTasksText.text = "0";
+                        totalTasksText.text = "/90";
+                    }
                 }
+                else
+                {
+                    doneTasksText.text = (finishedTasks-tutorialLength).ToString();
+                }
+                StartCoroutine(WaitAndInitializeTask(1f));
+
             }
             else
             {
-                doneTasksText.text = (finishedTasks-tutorialLength).ToString();
+                gizmo.SetActive(false);
+                interactabelParent.SetActive(false);
+                referenceParent.SetActive(false);
+                tutorialText.SetActive(true);
+                tutorialText.GetComponent<TextMeshProUGUI>().text =
+                    "Super, du hast alle Aufgaben bearbeitet! Melde dich jetzt bei der Versuchsleitung.";
             }
-            StartCoroutine(WaitAndInitializeTask(1f));
-
         }
+        
         
         if (Input.GetKeyDown(KeyCode.X))
         {
@@ -110,35 +126,42 @@ public class GameLogic : MonoBehaviour
 
     void InitalizeTask()
     {
-        int angle = -1;
-        GameObject cube = SelectCube();
-
-        while (angle == -1)
+        if (isGameRunning)
         {
-            if (!(cube is null))
+            int angle = -1;
+            GameObject cube = SelectCube();
+
+            while (angle == -1)
             {
-                angle = SelectAngle(cube.name);
-                if (angle == -1)
+                if (!(cube is null))
                 {
-                    cubePrefabs.Remove(cube);
-                    cube = SelectCube();
+                    angle = SelectAngle(cube.name);
+                    if (angle == -1)
+                    {
+                        cubePrefabs.Remove(cube);
+                        cube = SelectCube();
+                    }
+                }
+                else
+                {
+                    return;
                 }
             }
+            //Make sure no cubes remain in scene
+            DestroyAllChildren(referenceParent);
+            DestroyAllChildren(interactabelParent);
+
+            //Instantiate & Initialize new Cubes
+            GameObject referenceInstance = Instantiate(cube, Vector3.zero, defaultReferenceRotation);
+            GameObject interactableInstance = Instantiate(cube, Vector3.zero, Quaternion.Euler(angle, angle + objectOffset, 0));
+            currentInteractable = interactableInstance;
+            InitializeReference(referenceInstance);
+            InitializeInteractableGizmo(interactableInstance);
+
+            InitGizmo(interactableInstance);
+
+            taskLogManager.StartTask(cube.name, angle);  
         }
-        //Make sure no cubes remain in scene
-        DestroyAllChildren(referenceParent);
-        DestroyAllChildren(interactabelParent);
-
-        //Instantiate & Initialize new Cubes
-        GameObject referenceInstance = Instantiate(cube, Vector3.zero, defaultReferenceRotation);
-        GameObject interactableInstance = Instantiate(cube, Vector3.zero, Quaternion.Euler(angle, angle + objectOffset, 0));
-        currentInteractable = interactableInstance;
-        InitializeReference(referenceInstance);
-        InitializeInteractableGizmo(interactableInstance);
-
-        InitGizmo(interactableInstance);
-
-        taskLogManager.StartTask(cube.name, angle);
     }
 
     GameObject SelectCube()
@@ -154,7 +177,7 @@ public class GameLogic : MonoBehaviour
         }
         else
         {
-            //TODO: Exit Game
+            isGameRunning = false;
             Debug.LogWarning("The list of game objects is empty.");
             return null;
         }

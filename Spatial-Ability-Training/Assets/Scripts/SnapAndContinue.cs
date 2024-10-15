@@ -16,7 +16,7 @@ public class SnapAndContinue : MonoBehaviour
 
     public GameLogic gameLogic;
 
-    private int SsnapGraceRange = 16;
+    private int snapGraceRange = 10;
     
     // Update is called once per frame
     void Update()
@@ -32,7 +32,7 @@ public class SnapAndContinue : MonoBehaviour
     {
         if (!isRotateDone)
         {
-             if (RotationAngleHelper.IsRotationWithinLimits(transform.localEulerAngles,SsnapGraceRange/2, gameLogic.objectOffset))
+             if (RotationAngleHelper.IsRotationWithinLimits(transform.localEulerAngles,snapGraceRange/2, gameLogic.objectOffset))
              {
                  isRotateDone = true;
                  if (gameLogic.isActiveAndEnabled)
