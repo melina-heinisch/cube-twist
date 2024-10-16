@@ -165,6 +165,12 @@ public class GameLogic : MonoBehaviour
 
     GameObject SelectCube()
     {
+        //Test
+        /*if (CountFinishedTasks() == 9)
+        {
+            isGameRunning = false;
+            return null;
+        }*/
         if (cubePrefabs.Count > 0)
         {
             // Select a random index between 0 and the length of the list (exclusive)
